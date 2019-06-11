@@ -1,8 +1,8 @@
 class UsersController < ApplicationController
-  before_action :set_user, only: [:show, :edit, :update, :destroy]
-  before_action :logged_in_user, only: [:show, :edit, :update, :destroy]
+  before_action :set_user, only: [:show, :edit, :update, :destroy, :edit_basic_info, :update_basic_info]
+  before_action :logged_in_user, only: [:index, :edit, :update, :destroy, :edit_basic_info, :update_basic_info]
   before_action :correct_user, only: [:edit, :update]
-  before_action :admin_user, only: :destroy
+  before_action :admin_user, only: [:destroy, :edit_basic_info, :update_basic_info]
   
   def index
     @users = User.paginate(page: params[:page])
@@ -38,6 +38,17 @@ class UsersController < ApplicationController
     end
   end
   
+  def update_basic_info
+    if @user.update_attributes(basic_info_params)
+      # 更新成功時の処理
+      flash[:success] = "#{@user.name}の基本情報を更新しました。"
+    else
+      # 更新失敗時の処理
+      flash[:danger] = "#{@user.name}の更新は失敗しました。" + @user.errors.full_messages.join("<br>")
+    end
+    redirect_to users_url
+  end
+  
   def destroy
     @user.destroy
     flash[:success] = "#{@user.name}のデータを削除しました。"
@@ -47,8 +58,14 @@ class UsersController < ApplicationController
   private
   
     def user_params
-      params.require(:user).permit(:name, :email, :password, :password_confirmation)
+      params.require(:user).permit(:name, :email, :department, :password, :password_confirmation)
     end
+    
+    def basic_info_params
+      params.require(:user).permit(:department, :basic_time, :work_time)
+    end
+    
+    # beforeフィルター
     
     # paramsハッシュからユーザーを取得します。
     def set_user
