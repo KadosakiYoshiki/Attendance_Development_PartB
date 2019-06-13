@@ -9,4 +9,12 @@ module ApplicationHelper
       page_name + " | " + base_title # 文字列を連結して返す
     end
   end
+
+  # 曜日のクラス名を返す
+  def calender_color(date)
+    case date
+    when 6 then "saturday"
+    when 0 then "sunday"
+    end
+  end
 end
