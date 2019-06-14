@@ -30,6 +30,19 @@ class ApplicationController < ActionController::Base
     redirect_to root_url unless current_user.admin?
   end
 
+  # 管理権限者、または現在ログインしているユーザーを許可します。
+  def admin_or_correct_user(controller)
+    unless current_user?(@user) || current_user.admin?
+      flash[:danger] = case controller
+                       when "users"
+                        "閲覧権限がありません。"
+                       when "attendances"
+                        "編集権限がありません。"
+                       end
+      redirect_to(root_url)
+    end  
+  end
+
   # ページ出力前に1ヶ月分のデータの存在を確認・セットします。
   def set_one_month 
     @first_day = params[:date].nil? ?

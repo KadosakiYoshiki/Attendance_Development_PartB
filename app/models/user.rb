@@ -48,7 +48,7 @@ class User < ApplicationRecord
   def forget
     update_attribute(:remember_digest, nil)
   end
-=begin
+
   # 検索ワードが含まれる場合は合致するuserを返し、含まれてない場合は全てのユーザを返します。
   def self.search(search)
     if search
@@ -57,5 +57,5 @@ class User < ApplicationRecord
       all
     end
   end
-=end
+
 end
